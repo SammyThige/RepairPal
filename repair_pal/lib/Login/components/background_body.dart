@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:repair_pal/HomePage/homepage.dart';
 import 'package:repair_pal/Login/components/background_area.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:repair_pal/Login/components/rounded_input.dart';
@@ -42,7 +43,13 @@ class Background extends StatelessWidget {
             onChanged: (value) {},
             password: 'Password',
           ),
-          RoundedButton(text: "LOGIN", press: () {}),
+          RoundedButton(
+              text: "LOGIN",
+              press: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return HomePage();
+                }));
+              }),
           SizedBox(
             height: size.height * 0.03,
           ),
