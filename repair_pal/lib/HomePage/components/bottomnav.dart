@@ -22,7 +22,8 @@ class BottomNavBar extends StatelessWidget {
         activeColor: Colors.white,
         curve: Curves.easeOutExpo,
         duration: Duration(milliseconds: 200),
-        tabBackgroundColor: Colors.orange,
+        //tabBackgroundGradient: ,
+        tabBackgroundColor: Colors.orange.withOpacity(0.5),
         gap: 8,
         onTabChange: (index) {
           print(index);
