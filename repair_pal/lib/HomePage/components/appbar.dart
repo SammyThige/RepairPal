@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:repair_pal/HomePage/components/circlebutton.dart';
+import 'package:repair_pal/HomePage/workers/worker_listview.dart';
 import 'package:repair_pal/constants.dart';
 
 class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
@@ -88,7 +89,10 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => WorkerList()));
+      },
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -115,7 +119,10 @@ class CategoryCard extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Text(category.name),
+            Text(
+              category.name,
+              style: TextStyle(color: Colors.orange),
+            ),
             Text(
               category.description,
               style: Theme.of(context).textTheme.bodySmall,
