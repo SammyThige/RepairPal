@@ -52,6 +52,10 @@ class SignUpBody extends StatelessWidget {
                     hinttext: "Email",
                     onChanged: (value) {},
                     icon: Icons.email),
+                RoundedContainer(
+                    hinttext: "Phone Number",
+                    onChanged: (value) {},
+                    icon: Icons.phone),
                 RoundedPasswordField(
                     onChanged: (value) {}, password: 'Password'),
                 RoundedPasswordField(

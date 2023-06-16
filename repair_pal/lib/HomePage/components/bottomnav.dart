@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:repair_pal/HomePage/homepage.dart';
 import 'package:repair_pal/constants.dart';
+import 'package:repair_pal/test.dart';
 
-class BottomNavBar extends StatelessWidget {
+class BottomNavBar extends StatefulWidget {
   const BottomNavBar({
     super.key,
   });
 
+  @override
+  State<BottomNavBar> createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -25,13 +32,15 @@ class BottomNavBar extends StatelessWidget {
         //tabBackgroundGradient: ,
         tabBackgroundColor: Colors.orange.withOpacity(0.5),
         gap: 8,
+        //onTabChange: (index) => setState(() => this.index = index),
         onTabChange: (index) {
           print(index);
         },
+
         tabs: const [
           GButton(icon: Icons.home, text: "Home"),
-          GButton(icon: Icons.favorite_border, text: "Likes"),
-          GButton(icon: Icons.search, text: "Search"),
+          //GButton(icon: Icons.favorite_border, text: "Likes"),
+          GButton(icon: Icons.message, text: "Chats"),
           GButton(icon: Icons.settings, text: "Settings")
         ],
       ),

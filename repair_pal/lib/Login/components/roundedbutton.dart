@@ -23,8 +23,8 @@ class RoundedButton extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             gradient: const LinearGradient(colors: [
+              Color.fromRGBO(218, 144, 33, 0.98),
               Color.fromRGBO(111, 31, 148, 1),
-              Color.fromRGBO(218, 144, 33, 0.98)
             ])),
         child: Center(
           child: Text(

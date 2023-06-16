@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/call_button.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/image_slider.dart';
+import 'package:repair_pal/Login/components/roundedbutton.dart';
 
 class WorkerProfile extends StatelessWidget {
   const WorkerProfile({super.key});
@@ -137,7 +138,7 @@ class WorkerProfile extends StatelessWidget {
                   ),
                   SizedBox(height: 25),
                   Container(
-                    height: height * 0.5,
+                    height: height * 0.4,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       color: Colors.white,
@@ -146,10 +147,10 @@ class WorkerProfile extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
-                          Text(
+                          const Text(
                             'Previous Work',
                             style: TextStyle(
                               fontSize: 25,
@@ -157,17 +158,19 @@ class WorkerProfile extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
-                          Divider(
+                          const Divider(
                             thickness: 3,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           ComplicatedImageDemo(),
+                          //RoundedButton(text: "BOOK NOW", press: () {}),
                         ],
                       ),
                     ),
-                  )
+                  ),
+                  BookButton(text: "BOOK NOW", press: () {})
                 ],
               ),
             ),
