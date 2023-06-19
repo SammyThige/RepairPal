@@ -14,6 +14,8 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
+  final screens = [HomePage(), TestWidget()];
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

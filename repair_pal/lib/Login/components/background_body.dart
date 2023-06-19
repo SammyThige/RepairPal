@@ -7,6 +7,7 @@ import 'package:repair_pal/Login/components/rounded_password.dart';
 import 'package:repair_pal/Login/components/roundedbutton.dart';
 import 'package:repair_pal/Login/components/signupquestion.dart';
 import 'package:repair_pal/SignIn/registration_screen.dart';
+//import 'package:repair_pal/test2.dart';
 
 class Background extends StatelessWidget {
   const Background({

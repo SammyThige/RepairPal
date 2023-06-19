@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/call_button.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/image_slider.dart';
 import 'package:repair_pal/Login/components/roundedbutton.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WorkerProfile extends StatelessWidget {
   const WorkerProfile({super.key});
@@ -93,7 +94,9 @@ class WorkerProfile extends StatelessWidget {
                                     children: [
                                       CallButton(
                                         icon: Icons.call,
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          launchUrl('tel:=254722485761' as Uri);
+                                        },
                                         text: 'Call',
                                       ),
                                       Padding(
