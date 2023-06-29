@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:repair_pal/AppointmentPage/appointment.dart';
 import 'package:repair_pal/HomePage/components/appbar.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:repair_pal/UserProfile/userprofile.dart';
 import 'package:repair_pal/constants.dart';
 //import 'package:flutter/material.dart';
 //import 'package:repair_pal/test.dart';
@@ -30,7 +31,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int index = 0;
 
-  final screens = [HomeDashPage(), AppointmentPage()];
+  final screens = const [HomeDashPage(), AppointmentPage(), MyProfile()];
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:repair_pal/HomePage/workers/worker_profile/components/booking_page.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/call_button.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/image_slider.dart';
 import 'package:repair_pal/Login/components/roundedbutton.dart';
@@ -173,7 +174,14 @@ class WorkerProfile extends StatelessWidget {
                       ),
                     ),
                   ),
-                  BookButton(text: "BOOK NOW", press: () {})
+                  BookButton(
+                      text: "BOOK NOW",
+                      press: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const BookingPage()));
+                      })
                 ],
               ),
             ),
