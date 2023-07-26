@@ -29,6 +29,7 @@ class _BookingPageState extends State<BookingPage> {
           SliverToBoxAdapter(
             child: Column(
               children: <Widget>[
+                const SizedBox(height: 15),
                 _tableCalendar(),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 25),

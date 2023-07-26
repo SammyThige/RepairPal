@@ -51,30 +51,28 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          GridView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 8,
-            ),
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.all(10),
+          sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.8,
               crossAxisSpacing: 20,
               mainAxisSpacing: 24,
             ),
-            itemBuilder: (context, index) {
-              return CategoryCard(
-                category: categoryList[index],
-              );
-            },
-            itemCount: categoryList.length,
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return CategoryCard(
+                  category: categoryList[index],
+                );
+              },
+              childCount: categoryList.length,
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -110,7 +108,7 @@ class CategoryCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Align(
-              alignment: Alignment.topRight,
+              alignment: Alignment.topCenter,
               child: Image.asset(
                 category.thumbnail,
                 height: kCategoryImageSize,
@@ -125,7 +123,7 @@ class CategoryCard extends StatelessWidget {
             ),
             Text(
               category.description,
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),

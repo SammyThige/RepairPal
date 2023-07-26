@@ -70,7 +70,7 @@ class Category {
   });
 }
 
-List<Category> categoryList = [
+final List<Category> categoryList = [
   Category(
     thumbnail: 'assets/electrician.png',
     name: 'Electrician',
