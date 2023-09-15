@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/appointment_success.dart';
 import 'package:repair_pal/constants.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
@@ -88,7 +90,7 @@ class _BookingPageState extends State<BookingPage> {
                                   : null),
                           alignment: Alignment.center,
                           child: Text(
-                            '${index + 9}:00 ${index + 9 > 11 ? "AM" : "PM"}',
+                            '${index + 9}:00 ${index + 9 > 11 ? "PM" : "AM"}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color:

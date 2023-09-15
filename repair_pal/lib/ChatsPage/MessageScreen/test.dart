@@ -12,6 +12,7 @@ class Chat {
     required this.thumbnail,
     required this.description,
     required this.counter,
+    //required this.press
   });
 }
 

@@ -3,10 +3,39 @@ import 'package:repair_pal/HomePage/components/circlebutton.dart';
 import 'package:repair_pal/HomePage/workers/profile_icon.dart';
 import 'package:repair_pal/HomePage/workers/worker_listview.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/worker_profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const kPrimaryColor = Color(0xFF6F35A5);
 const kPrimaryLightColor = Color(0xFFF1E6FF);
 const kCategoryImageSize = 120.0;
+const kHeadTextStyle = TextStyle(
+  color: Colors.black,
+  fontSize: 24,
+  fontWeight: FontWeight.bold,
+);
+
+const kHeadSubtitleTextStyle = TextStyle(
+  fontSize: 18,
+  color: Colors.black87,
+);
+
+class Prefs {
+  Future addStringToSF(String key, String val) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, val);
+  }
+
+  Future<String?> getStringValuesSF(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final image = prefs.getString(key);
+    return image;
+  }
+
+  Future addBooleanToSF(String key, bool val) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(key, val);
+  }
+}
 
 class Config {
   static MediaQueryData? mediaQueryData;
@@ -56,154 +85,90 @@ class Config {
       ));
 }
 
-class Category {
-  String thumbnail;
-  String name;
-  String description;
-  //final VoidCallback press;
-
-  Category({
-    required this.thumbnail,
-    required this.name,
-    required this.description,
-    //required this.press,
-  });
+SnackBar mySnackBar(String message) {
+  return SnackBar(
+      backgroundColor: Colors.blue,
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+      ));
 }
 
-final List<Category> categoryList = [
-  Category(
-    thumbnail: 'assets/electrician.png',
-    name: 'Electrician',
-    description: 'Appliances, sockets and lights',
-    //press: () {}
-  ),
-  Category(
-    thumbnail: 'assets/plumber.png',
-    name: 'Plumber',
-    description: 'KitchenSink, Toilet and Showers',
-    // press: () {}
-  ),
-  Category(
-    thumbnail: 'assets/painter.png',
-    name: 'Painter',
-    description: 'HousePainting and Wall fence painting',
-    //press: () {}
-  ),
-  Category(
-    thumbnail: 'assets/roofing.png',
-    name: 'Roofer',
-    description: 'Brick Roof and Mabati',
-    //press: () {}
-  ),
-  Category(
-    thumbnail: 'assets/carpentry.png',
-    name: 'Capenty',
-    description: 'Door Locks and Furniture',
-    //press: () {}
-  ),
-  Category(
-    thumbnail: 'assets/bricklaying.png',
-    name: 'Mason',
-    description: 'Structural repair',
-    //press: () {}
-  ),
-];
+class DialogBuilder {
+  DialogBuilder(this.context);
 
-class ListContainer extends StatelessWidget {
-  //final String name;
-  const ListContainer({
-    super.key,
-    /* required this.name */
-  });
+  final BuildContext context;
+
+  void showLoadingIndicator(String text, String header) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
+              backgroundColor: Colors.deepOrange,
+              content: LoadingIndicator(text: text, header: header),
+            ));
+      },
+    );
+  }
+
+  void hideOpenDialog() {
+    Navigator.of(context).pop();
+  }
+}
+
+class LoadingIndicator extends StatelessWidget {
+  const LoadingIndicator({this.text = '', this.header = ''});
+
+  final String text;
+  final String header;
 
   @override
   Widget build(BuildContext context) {
+    var displayedText = text;
+    var headerText = header;
+    return Container(
+        padding: EdgeInsets.all(16),
+        color: Colors.grey,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _getLoadingIndicator(),
+              _getHeading(context, headerText),
+              _getText(displayedText)
+            ]));
+  }
+
+  Padding _getLoadingIndicator() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => WorkerProfile()));
-        },
         child: Container(
-          height: 130,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(width: 2, color: Colors.orange),
-          ),
-          //child: Center(child: Text(name))
-          child: Center(
-            child: Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Center(
-                    child: Profile(
-                      icon: AssetImage("assets/electrician.png"),
-                      //onPressed: () {},
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        //mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          Icon(
-                            Icons.person,
-                            color: Colors.orange,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Samuel Wambugu Thige",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        //crossAxisAlignment: CrossAxisAlignment.start,
-                        //mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          Icon(
-                            Icons.location_on,
-                            color: Colors.orange,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Donholm Phase 5  ",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+              color: Colors.deepOrange,
             ),
-          ),
+            width: 32,
+            height: 32),
+        padding: const EdgeInsets.only(bottom: 16));
+  }
+
+  Widget _getHeading(context, String headerText) {
+    return Padding(
+        child: Text(
+          headerText,
+          textAlign: TextAlign.center,
         ),
-      ),
+        padding: const EdgeInsets.only(bottom: 4));
+  }
+
+  Text _getText(String displayedText) {
+    return Text(
+      displayedText,
+      textAlign: TextAlign.center,
     );
   }
 }

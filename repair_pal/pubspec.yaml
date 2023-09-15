@@ -43,6 +43,14 @@ dependencies:
   flutter_phone_direct_caller: ^2.1.1
   table_calendar: ^3.0.9
   lottie: ^2.3.2
+  image_picker: ^1.0.4
+  toggle_switch: ^2.1.0
+  image_cropper: ^4.0.1
+  flutter_chat_ui: ^0.0.2
+  http: ^0.13.6
+  shared_preferences: ^2.2.1
+  provider: ^6.0.5
+  
   
 
 dev_dependencies:

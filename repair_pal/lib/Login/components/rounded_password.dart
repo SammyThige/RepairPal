@@ -2,33 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:repair_pal/Login/components/textfield_input.dart';
 import 'package:repair_pal/constants.dart';
 
-class RoundedPasswordField extends StatelessWidget {
+class RoundedPasswordField extends StatefulWidget {
   final ValueChanged<String> onChanged;
-  final String password;
+  final TextEditingController controller;
+  final String hintText;
+
   const RoundedPasswordField({
-    super.key,
+    Key? key,
     required this.onChanged,
-    required this.password,
-  });
+    required this.controller,
+    required this.hintText,
+  }) : super(key: key);
+
+  @override
+  _RoundedPasswordFieldState createState() => _RoundedPasswordFieldState();
+}
+
+class _RoundedPasswordFieldState extends State<RoundedPasswordField> {
+  bool obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
-        child: TextField(
-      obscureText: true,
-      obscuringCharacter: "*",
-      onChanged: onChanged,
-      decoration: InputDecoration(
-          hintText: password,
+      child: TextField(
+        obscureText: obscureText,
+        obscuringCharacter: "*",
+        onChanged: widget.onChanged,
+        controller: widget.controller,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
           icon: Icon(
             Icons.lock,
             color: kPrimaryColor,
           ),
-          suffixIcon: Icon(
-            Icons.visibility,
-            color: kPrimaryColor,
+          suffixIcon: GestureDetector(
+            onTap: () {
+              setState(() {
+                obscureText = !obscureText; // Toggle the visibility
+              });
+            },
+            child: Icon(
+              obscureText
+                  ? Icons.visibility
+                  : Icons.visibility_off, // Toggle the icon
+              color: kPrimaryColor,
+            ),
           ),
-          border: InputBorder.none),
-    ));
+          border: InputBorder.none,
+        ),
+      ),
+    );
   }
 }

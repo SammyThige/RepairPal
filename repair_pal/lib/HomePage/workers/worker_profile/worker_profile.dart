@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/booking_page.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/call_button.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/image_slider.dart';
 import 'package:repair_pal/Login/components/roundedbutton.dart';
+import 'package:repair_pal/test_constant.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WorkerProfile extends StatelessWidget {
-  const WorkerProfile({super.key});
+  final Worker worker;
+
+  const WorkerProfile({super.key, required this.worker});
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +41,12 @@ class WorkerProfile extends StatelessWidget {
                     children: [
                       InkWell(
                         splashColor: Colors.red,
-                        onTap: () {
+                        /* onTap: () {
                           Navigator.pop(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => WorkerProfile()));
-                        },
+                        }, */
                         child: Icon(
                           Icons.arrow_back_outlined,
                           size: 35,
@@ -83,11 +87,12 @@ class WorkerProfile extends StatelessWidget {
                                 children: [
                                   SizedBox(height: 70),
                                   Text(
-                                    'Sammy Thige',
+                                    '${worker.firstName} ${worker.lastName}',
                                     style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: 'Nunito',
-                                        fontSize: 30),
+                                      color: Colors.black,
+                                      fontFamily: 'Nunito',
+                                      fontSize: 30,
+                                    ),
                                   ),
                                   Row(
                                     mainAxisAlignment:
@@ -95,10 +100,8 @@ class WorkerProfile extends StatelessWidget {
                                     children: [
                                       CallButton(
                                         icon: Icons.call,
-                                        onPressed: () {
-                                          launchUrl('tel:=254722485761' as Uri);
-                                        },
                                         text: 'Call',
+                                        worker: worker,
                                       ),
                                       Padding(
                                         padding: EdgeInsets.all(8),
@@ -112,8 +115,9 @@ class WorkerProfile extends StatelessWidget {
                                         ),
                                       ),
                                       CallButton(
+                                        worker: worker,
                                         icon: Icons.message,
-                                        onPressed: () {},
+                                        //onPressed: () {},
                                         text: 'Chat',
                                       ),
                                     ],

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+
+import '../../../../test_constant.dart';
 //import 'package:repair_pal/constants.dart';
 
 class CallButton extends StatelessWidget {
+  final Worker worker;
   final IconData icon;
   final String text;
-  final VoidCallback onPressed;
-  const CallButton(
-      {super.key,
-      required this.icon,
-      required this.text,
-      required this.onPressed});
+
+  const CallButton({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.worker,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,9 @@ class CallButton extends StatelessWidget {
           color: Colors.orange, // button color
           child: InkWell(
             splashColor: Colors.green, // splash color
-            onTap: () {}, // button pressed
+            onTap: () {
+              _makePhoneCall(worker.phone);
+            }, // button pressed
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -33,6 +40,15 @@ class CallButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    try {
+      await FlutterPhoneDirectCaller.callNumber(phoneNumber);
+    } catch (e) {
+      // Handle errors, e.g., permission denied or other issues.
+      print('Error making a phone call: $e');
+    }
   }
 }
 

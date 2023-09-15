@@ -15,44 +15,66 @@ class _AppointmentPageState extends State<AppointmentPage> {
   Alignment _alignment = Alignment.centerLeft;
   List<dynamic> schedules = [
     {
-      "doctor_name": "Sam Thige",
-      "doctor_profile": "assets/plug.png",
-      "category": "Cardiologist",
+      "worker_name": "Sam Thige",
+      "designation": "Cardiologist",
       "status": FilterStatus.upcoming,
     },
     {
-      "doctor_name": "Daniel Thige",
-      "doctor_profile": "assets/bricklaying.png",
-      "category": "Radiology",
+      "worker_name": "Daniel Thige",
+      "designation": "Radiology",
       "status": FilterStatus.complete,
     },
     {
-      "doctor_name": "Lucy Thige",
-      "doctor_profile": "assets/carpentry.png",
-      "category": "Dental",
+      "worker_name": "Lucy Thige",
+      "designation": "Dental",
       "status": FilterStatus.complete,
     },
     {
-      "doctor_name": "Victor Thige",
-      "doctor_profile": "assets/painter.png",
-      "category": "Oncologist",
+      "worker_name": "Victor Thige",
+      "designation": "Oncologist",
       "status": FilterStatus.cancel,
     }
   ];
+
+  Future<void> _showCancelConfirmationDialog(var schedule) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Cancel'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to cancel this appointment?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Yes'),
+              onPressed: () {
+                setState(() {
+                  schedule['status'] = FilterStatus.cancel;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<dynamic> filteredSchedules = schedules.where((var schedule) {
-      /* switch (schedule['status']) {
-        case 'upcoming':
-          schedule['status'] = FilterStatus.upcoming;
-          break;
-        case 'complete':
-          schedule['status'] = FilterStatus.complete;
-          break;
-        case 'cancel':
-          schedule['status'] = FilterStatus.cancel;
-          break;
-      } */
       return schedule['status'] == status;
     }).toList();
 
@@ -82,26 +104,28 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     children: [
                       for (FilterStatus filterStatus in FilterStatus.values)
                         Expanded(
-                            child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (filterStatus == FilterStatus.upcoming) {
-                                status = FilterStatus.upcoming;
-                                _alignment = Alignment.centerLeft;
-                              } else if (filterStatus ==
-                                  FilterStatus.complete) {
-                                status = FilterStatus.complete;
-                                _alignment = Alignment.center;
-                              } else if (filterStatus == FilterStatus.cancel) {
-                                status = FilterStatus.cancel;
-                                _alignment = Alignment.centerRight;
-                              }
-                            });
-                          },
-                          child: Center(
-                            child: Text(filterStatus.name),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (filterStatus == FilterStatus.upcoming) {
+                                  status = FilterStatus.upcoming;
+                                  _alignment = Alignment.centerLeft;
+                                } else if (filterStatus ==
+                                    FilterStatus.complete) {
+                                  status = FilterStatus.complete;
+                                  _alignment = Alignment.center;
+                                } else if (filterStatus ==
+                                    FilterStatus.cancel) {
+                                  status = FilterStatus.cancel;
+                                  _alignment = Alignment.centerRight;
+                                }
+                              });
+                            },
+                            child: Center(
+                              child: Text(filterStatus.name),
+                            ),
                           ),
-                        ))
+                        ),
                     ],
                   ),
                 ),
@@ -136,10 +160,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   bool isLastElement = filteredSchedules.length + 1 == index;
                   return Card(
                     shape: RoundedRectangleBorder(
-                        side: const BorderSide(
-                          color: Colors.grey,
-                        ),
-                        borderRadius: BorderRadius.circular(20)),
+                      side: const BorderSide(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     margin: !isLastElement
                         ? const EdgeInsets.only(bottom: 20)
                         : EdgeInsets.zero,
@@ -150,10 +175,10 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(
+                              /* CircleAvatar(
                                 backgroundImage:
                                     AssetImage(_schedule['doctor_profile']),
-                              ),
+                              ), */
                               const SizedBox(
                                 width: 15,
                               ),
@@ -162,7 +187,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    _schedule['doctor_name'],
+                                    _schedule['worker_name'],
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w700,
@@ -172,7 +197,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    _schedule['category'],
+                                    _schedule['designation'],
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
@@ -190,32 +215,23 @@ class _AppointmentPageState extends State<AppointmentPage> {
                           const SizedBox(
                             height: 15,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: () {},
-                                  child: const Text(
-                                    'Cancel',
-                                    style: TextStyle(color: Colors.orange),
+                          if (status == FilterStatus.upcoming)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      _showCancelConfirmationDialog(_schedule);
+                                    },
+                                    child: const Text(
+                                      'Cancel',
+                                      style: TextStyle(color: Colors.orange),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              /* const SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: () {},
-                                  child: const Text(
-                                    'Reschedule',
-                                    style: TextStyle(color: kPrimaryColor),
-                                  ),
-                                ),
-                              ) */
-                            ],
-                          )
+                              ],
+                            )
                         ],
                       ),
                     ),
@@ -233,11 +249,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
 class ScheduleCard extends StatelessWidget {
   const ScheduleCard({
     Key? key,
-    /* required this.date, required this.day, required this.time */
   }) : super(key: key);
-  // final String date;
-  //final String day;
-  //final String time;
 
   @override
   Widget build(BuildContext context) {

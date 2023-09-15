@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:repair_pal/HomePage/components/circlebutton.dart';
 import 'package:repair_pal/HomePage/workers/worker_listview.dart';
 import 'package:repair_pal/constants.dart';
+import 'package:repair_pal/test_constant.dart';
 
 class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
+  //final String userName;
   const AppToolBar({super.key});
 
   @override
@@ -24,17 +25,13 @@ class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Hello,\nGood Morning",
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
-              CircleButton(
-                icon: Icons.notifications,
-                onPressed: () {},
-              )
             ],
           )
         ],
@@ -64,8 +61,89 @@ class Body extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
+                final category = categoryList[index];
+                final Map<String, VoidCallback> categoryActions = {
+                  'Electrician': () {
+                    // Perform Electrician-specific action here
+                    // For example, navigate to Electrician screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WorkerList(
+                          category: category,
+                        ),
+                      ),
+                    );
+                  },
+                  'Plumber': () {
+                    // Perform Plumber-specific action here
+                    // For example, navigate to Plumber screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WorkerList(
+                          category: category,
+                        ),
+                      ),
+                    );
+                  },
+                  'Painter': () {
+                    // Perform Painter-specific action here
+                    // For example, navigate to Painter screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WorkerList(
+                          category: category,
+                        ),
+                      ),
+                    );
+                  },
+                  'Roofer': () {
+                    // Perform Roofer-specific action here
+                    // For example, navigate to Roofer screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WorkerList(
+                          category: category,
+                        ),
+                      ),
+                    );
+                  },
+                  'Carpenter': () {
+                    // Perform Carpenter-specific action here
+                    // For example, navigate to Carpenter screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WorkerList(
+                          category: category,
+                        ),
+                      ),
+                    );
+                  },
+                  'Mason': () {
+                    // Perform Mason-specific action here
+                    // For example, navigate to Mason screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WorkerList(
+                          category: category,
+                        ),
+                      ),
+                    );
+                  },
+                };
+                final onTap = categoryActions[category.name] ??
+                    () {
+                      // Default action when no specific condition is met
+                      print('Default action for ${category.name}');
+                    };
                 return CategoryCard(
-                  category: categoryList[index],
+                  category: category,
+                  onTap: onTap,
                 );
               },
               childCount: categoryList.length,
@@ -79,18 +157,21 @@ class Body extends StatelessWidget {
 
 class CategoryCard extends StatelessWidget {
   final Category category;
+  final VoidCallback onTap;
   const CategoryCard({
     Key? key,
     required this.category,
+    required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: onTap,
+      /* () {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => WorkerList()));
-      },
+      }, */
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
