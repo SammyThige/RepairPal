@@ -36,6 +36,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
     }
   ];
 
+  void _markAppointmentComplete(var schedule) {
+    setState(() {
+      schedule['status'] = FilterStatus.complete;
+    });
+  }
+
   Future<void> _showCancelConfirmationDialog(var schedule) async {
     return showDialog<void>(
       context: context,
@@ -45,14 +51,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
           title: Text('Confirm Cancel'),
           content: SingleChildScrollView(
             child: ListBody(
-              children: <Widget>[
+              children: const <Widget>[
                 Text('Are you sure you want to cancel this appointment?'),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 setState(() {
                   schedule['status'] = FilterStatus.cancel;
@@ -61,7 +67,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
               },
             ),
             TextButton(
-              child: Text('No'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -80,7 +86,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -227,6 +233,23 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                     child: const Text(
                                       'Cancel',
                                       style: TextStyle(color: Colors.orange),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10), // Add some spacing
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      _markAppointmentComplete(_schedule);
+                                    },
+                                    child: const Text(
+                                      'Complete',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Colors.green),
                                     ),
                                   ),
                                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:repair_pal/HomePage/workers/worker_listview.dart';
 import 'package:repair_pal/constants.dart';
 import 'package:repair_pal/test_constant.dart';
+//import 'package:repair_pal/test_constant_2.dart';
 
 class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
   //final String userName;
@@ -167,7 +168,12 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () async {
+        await category
+            .fetchWorkersFromDatabase(); // Fetch workers from the database
+        onTap(); // Execute the onTap callback
+      },
+      //onTap,
       /* () {
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => WorkerList()));
