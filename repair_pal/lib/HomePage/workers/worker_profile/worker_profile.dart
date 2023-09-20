@@ -88,7 +88,7 @@ class WorkerProfile extends StatelessWidget {
                                   SizedBox(height: 70),
                                   Text(
                                     '${worker.firstName} ${worker.lastName}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.black,
                                       fontFamily: 'Nunito',
                                       fontSize: 30,
@@ -184,7 +184,11 @@ class WorkerProfile extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BookingPage()));
+                                builder: (context) => BookingPage(
+                                      workerEmail: worker.email,
+                                      workerFname: worker.firstName,
+                                      workerLname: worker.lastName,
+                                    )));
                       })
                 ],
               ),

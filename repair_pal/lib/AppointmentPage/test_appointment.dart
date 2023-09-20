@@ -3,9 +3,10 @@ import 'package:repair_pal/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class AppointmentPage extends StatefulWidget {
-  const AppointmentPage({super.key});
+  const AppointmentPage({Key? key}) : super(key: key);
 
   @override
   State<AppointmentPage> createState() => _AppointmentPageState();
@@ -13,57 +14,121 @@ class AppointmentPage extends StatefulWidget {
 
 enum FilterStatus { upcoming, completed, cancelled }
 
-class _AppointmentPageState extends State<AppointmentPage> {
-  FilterStatus status = FilterStatus.upcoming; //default filter status
-  Alignment _alignment = Alignment.centerLeft;
-  List<Map<String, dynamic>> appointments = [];
+class Appointment {
+  final String day;
+  final DateTime date;
+  late final TimeOfDay time;
+  final String workerEmail;
+  final String customerEmail;
+  late FilterStatus status;
+  final String workerFirstName;
+  final String workerLastName;
+  final String designation;
 
-  List<Map<String, dynamic>> schedules = [
-    {
-      "worker_name": "Sam Thige",
-      "designation": "Cardiologist",
-      "status": FilterStatus.upcoming,
-      "day": "Monday",
-      "date": "02/03/2023",
-      "time": "2:00 PM",
-    },
-    {
-      "worker_name": "Daniel Thige",
-      "designation": "Radiology",
-      "status": FilterStatus.completed,
-      "day": "Tuesday",
-      "date": "02/04/2023",
-      "time": "3:30 PM",
-    },
-    {
-      "worker_name": "Lucy Thige",
-      "designation": "Dental",
-      "status": FilterStatus.completed,
-      "day": "Wednesday",
-      "date": "02/05/2023",
-      "time": "10:00 AM",
-    },
-    {
-      "worker_name": "Victor Thige",
-      "designation": "Oncologist",
-      "status": FilterStatus.cancelled,
-      "day": "Thursday",
-      "date": "02/06/2023",
-      "time": "1:15 PM",
-    },
-  ];
-
-  void _markAppointmentComplete(Map<String, dynamic> schedule) {
-    setState(() {
-      schedule['status'] = FilterStatus.completed;
-    });
+  Appointment({
+    required this.day,
+    required this.date,
+    required String time,
+    required this.workerEmail,
+    required this.customerEmail,
+    required this.status,
+    required this.workerFirstName,
+    required this.workerLastName,
+    required this.designation,
+  }) {
+    final parts = time.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
+    this.time = TimeOfDay(hour: hour, minute: minute);
   }
 
-  Future<void> _showCancelConfirmationDialog(
-      Map<String, dynamic> schedule) async {
+  factory Appointment.fromJson(Map<String, dynamic> json) {
+    return Appointment(
+      day: json['Day'],
+      date: DateTime.parse(json['Date']),
+      time: json['Time'], // Pass the time string from JSON
+      workerEmail: json['Worker_email'],
+      customerEmail: json['Customer_email'],
+      status: _mapStatus(json['Status']),
+      workerFirstName: json['Worker_fname'],
+      workerLastName: json['Worker_lname'],
+      designation: json['designation'],
+    );
+  }
+
+  static FilterStatus _mapStatus(String status) {
+    switch (status) {
+      case 'upcoming':
+        return FilterStatus.upcoming;
+      case 'completed':
+        return FilterStatus.completed;
+      case 'cancelled':
+        return FilterStatus.cancelled;
+      default:
+        return FilterStatus.cancelled;
+    }
+  }
+}
+
+class _AppointmentPageState extends State<AppointmentPage> {
+  FilterStatus status = FilterStatus.upcoming;
+  Alignment _alignment = Alignment.centerLeft;
+  List<Appointment> appointments = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAppointments();
+  }
+
+  Future<void> fetchAppointments() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final customerEmail = prefs.getString('email');
+
+      if (customerEmail != null) {
+        final response = await http.get(
+          Uri.parse(
+              'https://sam-thige.000webhostapp.com//RepairPal/scripts/fetch_appointments.php?email=$customerEmail'),
+        );
+
+        if (response.statusCode == 200) {
+          final responseBody = response.body.trim();
+
+          final jsonResponse = json.decode(responseBody) as List<dynamic>;
+          appointments.clear();
+
+          jsonResponse.forEach((appointmentData) {
+            final appointment = Appointment.fromJson(appointmentData);
+            appointments.add(appointment);
+          });
+
+          setState(() {});
+        } else {
+          print(
+              'Failed to fetch appointments. Status code: ${response.statusCode}');
+        }
+      } else {
+        print('Customer email is null.');
+      }
+    } catch (e) {
+      print('Error fetching appointments: $e');
+    }
+  }
+
+  void _markAppointmentComplete(Appointment appointment) {
+    setState(() {
+      // Update the appointment status to "completed"
+      appointment.status = FilterStatus.completed;
+    });
+
+    // Implement additional logic here, such as updating the database or performing other actions.
+  }
+
+  Future<void> _showCancelConfirmationDialog(Appointment appointment) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button to close dialog!
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirm Cancel'),
@@ -79,8 +144,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
               child: const Text('Yes'),
               onPressed: () {
                 setState(() {
-                  schedule['status'] = FilterStatus.cancelled;
+                  // Update the appointment status to "cancelled"
+                  appointment.status = FilterStatus.cancelled;
                 });
+
+                // Implement additional logic here, such as updating the database or performing other actions.
+
                 Navigator.of(context).pop();
               },
             ),
@@ -98,8 +167,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> filteredSchedules = schedules.where((schedule) {
-      return schedule['status'] == status;
+    List<Appointment> filteredAppointments = appointments.where((appointment) {
+      return appointment.status == status;
     }).toList();
 
     return SafeArea(
@@ -131,16 +200,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
+                                status = filterStatus;
                                 if (filterStatus == FilterStatus.upcoming) {
-                                  status = FilterStatus.upcoming;
                                   _alignment = Alignment.centerLeft;
                                 } else if (filterStatus ==
                                     FilterStatus.completed) {
-                                  status = FilterStatus.completed;
                                   _alignment = Alignment.center;
                                 } else if (filterStatus ==
                                     FilterStatus.cancelled) {
-                                  status = FilterStatus.cancelled;
                                   _alignment = Alignment.centerRight;
                                 }
                               });
@@ -179,10 +246,10 @@ class _AppointmentPageState extends State<AppointmentPage> {
             Config.spaceSmall,
             Expanded(
               child: ListView.builder(
-                itemCount: filteredSchedules.length,
+                itemCount: filteredAppointments.length,
                 itemBuilder: ((context, index) {
-                  var _schedule = filteredSchedules[index];
-                  bool isLastElement = filteredSchedules.length - 1 == index;
+                  var appointment = filteredAppointments[index];
+                  bool isLastElement = filteredAppointments.length + 1 == index;
 
                   return Card(
                     shape: RoundedRectangleBorder(
@@ -201,10 +268,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         children: [
                           Row(
                             children: [
-                              /* CircleAvatar(
-                                backgroundImage:
-                                    AssetImage(_schedule['doctor_profile']),
-                              ), */
                               const SizedBox(
                                 width: 15,
                               ),
@@ -213,7 +276,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    _schedule['worker_name'],
+                                    '${appointment.workerFirstName} ${appointment.workerLastName}',
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w700,
@@ -223,7 +286,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    _schedule['designation'],
+                                    appointment.designation,
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
@@ -238,9 +301,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             height: 15,
                           ),
                           ScheduleCard(
-                            day: _schedule['day'],
-                            date: _schedule['date'],
-                            time: _schedule['time'],
+                            day: appointment.day,
+                            date: appointment.date,
+                            time: appointment.time,
                           ),
                           const SizedBox(
                             height: 15,
@@ -252,7 +315,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                 Expanded(
                                   child: OutlinedButton(
                                     onPressed: () {
-                                      _showCancelConfirmationDialog(_schedule);
+                                      _showCancelConfirmationDialog(
+                                          appointment);
                                     },
                                     child: const Text(
                                       'Cancel',
@@ -260,11 +324,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 10), // Add some spacing
+                                SizedBox(width: 10),
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _markAppointmentComplete(_schedule);
+                                      _markAppointmentComplete(appointment);
                                     },
                                     child: const Text(
                                       'Complete',
@@ -295,8 +359,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
 class ScheduleCard extends StatelessWidget {
   final String day;
-  final String date;
-  final String time;
+  final DateTime date;
+  final TimeOfDay time;
 
   const ScheduleCard({
     Key? key,
@@ -320,14 +384,14 @@ class ScheduleCard extends StatelessWidget {
         children: <Widget>[
           const Icon(
             Icons.calendar_today,
-            color: Color.fromRGBO(255, 152, 0, 1),
-            size: 13,
+            color: Colors.orange,
+            size: 15,
           ),
           const SizedBox(
-            width: 3,
+            width: 5,
           ),
           Text(
-            '$day  $date',
+            '$day   ${DateFormat('yyyy-MM-dd').format(date)}', // Format date as desired
             style: const TextStyle(
               color: Colors.orange,
             ),
@@ -341,11 +405,11 @@ class ScheduleCard extends StatelessWidget {
             size: 17,
           ),
           const SizedBox(
-            width: 3,
+            width: 5,
           ),
           Flexible(
             child: Text(
-              time,
+              '${time.hour}:${time.minute}', // Format time as desired
               style: const TextStyle(
                 color: Colors.orange,
               ),

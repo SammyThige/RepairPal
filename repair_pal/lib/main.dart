@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:repair_pal/Login/login_screen.dart';
 
+import 'your_user_provider_file.dart'; // Import your UserProvider file
+
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (_) =>
+                UserProvider()), // Assuming UserProvider is a ChangeNotifier
+        // Add other providers if needed
+      ],
+      child: MyApp(), // Your app's main widget
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
