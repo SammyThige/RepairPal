@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:repair_pal/HomePage/workers/worker_profile/components/appointment_success.dart';
 import 'package:repair_pal/constants.dart';
@@ -311,9 +313,15 @@ class _BookingPageState extends State<BookingPage> {
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? custemail = prefs.getString('email');
+
+    // Generate a unique booking ID using the current timestamp and a random number
+    String bookingId = DateTime.now().millisecondsSinceEpoch.toString() +
+        Random().nextInt(10000).toString();
+
     final url = Uri.parse(
         'https://sam-thige.000webhostapp.com/RepairPal/scripts/add_booking.php');
     final response = await http.post(url, body: {
+      'bookingId': bookingId, // Pass the generated booking ID
       'selectedDate': date,
       'selectedTime': time,
       'workerEmail': widget.workerEmail,

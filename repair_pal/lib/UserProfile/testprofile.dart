@@ -1,12 +1,10 @@
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:repair_pal/your_user_provider_file.dart';
+import 'package:http/http.dart' as http;
 
 class MyProfile extends StatefulWidget {
   final Map<String, dynamic> userData;
+
   const MyProfile({Key? key, required this.userData}) : super(key: key);
 
   @override
@@ -14,22 +12,17 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfileState extends State<MyProfile> {
-  TextEditingController _nameController =
-      TextEditingController(); // Remove initial value
-  TextEditingController _phoneController =
-      TextEditingController(); // Remove initial value
-  TextEditingController _addressController =
-      TextEditingController(); // Remove initial value
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
 
   String? _profileImagePath;
-  bool _avatarTapped = false;
   bool _isEditing = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize text controllers with user data received from the API
     _nameController.text =
         widget.userData['firstName_cl'] + ' ' + widget.userData['lastName_cl'];
     _phoneController.text = widget.userData['phone_cl'];
@@ -41,6 +34,9 @@ class _MyProfileState extends State<MyProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('My Profile'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -49,67 +45,53 @@ class _MyProfileState extends State<MyProfile> {
               SizedBox(height: 40),
               GestureDetector(
                 onTap: () {
-                  print("CircleAvatar Tapped");
                   _pickProfileImage();
                 },
                 child: CircleAvatar(
                   radius: 70,
-                  backgroundImage:
-                      _profileImagePath != null && _profileImagePath!.isNotEmpty
-                          ? FileImage(File(_profileImagePath!))
-                              as ImageProvider<Object>?
-                          : AssetImage("assets/electrician.png"),
+                  backgroundImage: _profileImagePath != null &&
+                          _profileImagePath!.isNotEmpty
+                      ? NetworkImage(
+                              'https://sam-thige.000webhostapp.com/RepairPal/scripts/$_profileImagePath')
+                          as ImageProvider<Object>
+                      : AssetImage("assets/electrician.png"),
                 ),
               ),
               const SizedBox(height: 20),
-              itemProfile('Name', _nameController.text, Icons.person),
+              itemProfile('Name', Icons.person, _nameController),
               const SizedBox(height: 20),
-              itemProfile('Phone', _phoneController.text, Icons.phone),
+              itemProfile('Phone', Icons.phone, _phoneController),
               const SizedBox(height: 20),
-              itemProfile(
-                  'Address', _addressController.text, Icons.location_on),
+              itemProfile('Address', Icons.location_on, _addressController),
               const SizedBox(height: 20),
-              itemProfile('Email', _emailController.text, Icons.mail),
+              itemProfile('Email', Icons.mail, _emailController),
               const SizedBox(height: 20),
-              if (!_isEditing && _avatarTapped)
-                SizedBox(
-                  height: 50,
-                  width: 150, // Adjust the width as needed
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isEditing = true;
-                      });
-                    },
-                    style:
-                        ElevatedButton.styleFrom(padding: EdgeInsets.all(15)),
-                    child: const Text("Edit Profile"),
-                  ),
+              SizedBox(
+                height: 50,
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: _editProfile,
+                  style: ElevatedButton.styleFrom(padding: EdgeInsets.all(15)),
+                  child: const Text("Edit Profile"),
                 ),
+              ),
               if (_isEditing)
                 SizedBox(
                   height: 50,
-                  width: 100,
+                  width: 150,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _saveChanges();
-                    },
+                    onPressed: _saveChanges,
                     style:
                         ElevatedButton.styleFrom(padding: EdgeInsets.all(15)),
                     child: const Text("Save"),
                   ),
                 ),
-              SizedBox(
-                height: 10,
-              ),
               if (_profileImagePath != null)
                 SizedBox(
                   height: 50,
-                  width: 150, // Adjust the width as needed
+                  width: 150,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _sendImageToDatabase();
-                    },
+                    onPressed: _sendImageToDatabase,
                     style:
                         ElevatedButton.styleFrom(padding: EdgeInsets.all(15)),
                     child: const Text("Save Image"),
@@ -122,9 +104,8 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
-  itemProfile(String title, String subtitle, IconData icondata) {
-    final controller = _getController(title);
-
+  itemProfile(
+      String title, IconData icondata, TextEditingController controller) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -139,49 +120,31 @@ class _MyProfileState extends State<MyProfile> {
         ],
       ),
       child: ListTile(
-        title: _isEditing
-            ? TextFormField(
+        title: !_isEditing
+            ? Text(title)
+            : TextFormField(
                 controller: controller,
                 decoration: InputDecoration(hintText: title),
-              )
-            : Text(title),
-        subtitle: _isEditing
-            ? TextFormField(
+              ),
+        subtitle: !_isEditing
+            ? Text(controller.text)
+            : TextFormField(
                 controller: controller,
-                decoration: InputDecoration(hintText: subtitle),
-              )
-            : Text(subtitle),
+                decoration: InputDecoration(hintText: controller.text),
+              ),
         leading: Icon(icondata),
         tileColor: Colors.white,
       ),
     );
   }
 
-  TextEditingController _getController(String title) {
-    if (title == 'Name') {
-      return _nameController;
-    } else if (title == 'Phone') {
-      return _phoneController;
-    } else if (title == 'Address') {
-      return _addressController;
-    } else if (title == 'Email') {
-      return _emailController;
-    } else {
-      return TextEditingController();
-    }
-  }
-
-  void _saveChanges() {
-    // Save changes and update the profile data
+  void _editProfile() {
     setState(() {
-      _isEditing = false;
+      _isEditing = !_isEditing;
     });
   }
 
   Future<void> _pickProfileImage() async {
-    setState(() {
-      _avatarTapped = true; // Set the avatar tap flag to true
-    });
     final imagePicker = ImagePicker();
     final pickedImage = await imagePicker.pickImage(
       source: ImageSource.gallery,
@@ -193,29 +156,68 @@ class _MyProfileState extends State<MyProfile> {
     }
   }
 
-  Future<void> _sendImageToDatabase() async {
-    if (_profileImagePath != null) {
-      try {
-        // Send the image file to your database using an HTTP POST request or your preferred method.
-        // You can use the http package or any other method of your choice.
-        var url =
-            Uri.parse('YOUR_DATABASE_URL'); // Replace with your database URL
-        var request = http.MultipartRequest('POST', url);
-        request.files.add(
-            await http.MultipartFile.fromPath('image', _profileImagePath!));
+  Future<void> _saveChanges() async {
+    // Save changes and update the profile data in the database
+    setState(() {
+      _isEditing = false;
+    });
 
-        var response = await request.send();
+    final email = _emailController.text;
+    final name = _nameController.text;
+    final phone = _phoneController.text;
+    final address = _addressController.text;
+
+    final Map<String, dynamic> changes = {};
+
+    if (name !=
+        widget.userData['firstName_cl'] +
+            ' ' +
+            widget.userData['lastName_cl']) {
+      final nameParts = name.split(' ');
+      changes['name'] = name;
+    }
+
+    if (phone != widget.userData['phone_cl']) {
+      changes['phone'] = phone;
+    }
+
+    if (address != widget.userData['location']) {
+      changes['address'] = address;
+    }
+
+    if (changes.isNotEmpty) {
+      try {
+        // Create an HTTP POST request
+        final response = await http.post(
+          Uri.parse(
+              'https://sam-thige.000webhostapp.com/RepairPal/scripts/update_profile.php'), // Replace with your PHP script URL
+          body: {
+            'email': email,
+            ...changes, // Include only the changed fields in the request
+          },
+        );
+
         if (response.statusCode == 200) {
-          // Image successfully sent to the database
-          print('Image sent to the database.');
+          // Profile updated successfully
+          print('Profile updated successfully.');
         } else {
           // Handle error
-          print('Failed to send image to the database.');
+          print('Failed to update profile: ${response.body}');
         }
       } catch (error) {
         // Handle any exceptions
-        print('Error sending image to the database: $error');
+        print('Error updating profile: $error');
       }
+    } else {
+      // No changes were made
+      print('No changes to save.');
+    }
+  }
+
+  Future<void> _sendImageToDatabase() async {
+    if (_profileImagePath != null) {
+      // Implement image upload logic here
+      // ...
     }
   }
 }

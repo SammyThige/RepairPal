@@ -15,6 +15,7 @@ class AppointmentPage extends StatefulWidget {
 enum FilterStatus { upcoming, completed, cancelled }
 
 class Appointment {
+  final String bookingId; // Add bookingId field
   final String day;
   final DateTime date;
   late final TimeOfDay time;
@@ -26,6 +27,7 @@ class Appointment {
   final String designation;
 
   Appointment({
+    required this.bookingId, // Initialize bookingId
     required this.day,
     required this.date,
     required String time,
@@ -44,6 +46,7 @@ class Appointment {
 
   factory Appointment.fromJson(Map<String, dynamic> json) {
     return Appointment(
+      bookingId: json['booking_id'], // Parse bookingId from JSON
       day: json['Day'],
       date: DateTime.parse(json['Date']),
       time: json['Time'], // Pass the time string from JSON
@@ -116,13 +119,37 @@ class _AppointmentPageState extends State<AppointmentPage> {
     }
   }
 
-  void _markAppointmentComplete(Appointment appointment) {
-    setState(() {
-      // Update the appointment status to "completed"
-      appointment.status = FilterStatus.completed;
-    });
+  void _markAppointmentComplete(Appointment appointment) async {
+    try {
+      final url = Uri.parse(
+          'https://sam-thige.000webhostapp.com/RepairPal/scripts/update_appointment_status.php');
+      final response = await http.post(url, body: {
+        'appointment_id': appointment.bookingId, // Send the bookingId
+        'status': 'completed', // Set the status to 'completed'
+      });
 
-    // Implement additional logic here, such as updating the database or performing other actions.
+      if (response.statusCode == 200) {
+        String responseBody = response.body;
+        print("$responseBody");
+        Map<String, dynamic> data = json.decode(responseBody);
+
+        if (data['success'] == true) {
+          // Successfully marked as completed
+          setState(() {
+            appointment.status = FilterStatus.completed;
+          });
+        } else {
+          // Handle error if not successful
+          print("Error marking appointment as completed.");
+        }
+      } else {
+        // HTTP request failed
+        print(
+            "Failed to mark appointment as completed. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error marking appointment as completed: $e");
+    }
   }
 
   Future<void> _showCancelConfirmationDialog(Appointment appointment) async {
@@ -143,11 +170,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
             TextButton(
               child: const Text('Yes'),
               onPressed: () {
-                setState(() {
+                /* setState(() {
                   // Update the appointment status to "cancelled"
                   appointment.status = FilterStatus.cancelled;
-                });
-
+                }); */
+                _cancelAppointment(appointment);
                 // Implement additional logic here, such as updating the database or performing other actions.
 
                 Navigator.of(context).pop();
@@ -163,6 +190,38 @@ class _AppointmentPageState extends State<AppointmentPage> {
         );
       },
     );
+  }
+
+  void _cancelAppointment(Appointment appointment) async {
+    try {
+      final url = Uri.parse(
+          'https://sam-thige.000webhostapp.com/RepairPal/scripts/update_appointment_status.php');
+      final response = await http.post(url, body: {
+        'appointment_id': appointment.bookingId, // Send the bookingId
+        'status': 'cancelled', // Set the status to 'cancelled'
+      });
+
+      if (response.statusCode == 200) {
+        String responseBody = response.body;
+        Map<String, dynamic> data = json.decode(responseBody);
+
+        if (data['success'] == true) {
+          // Successfully marked as cancelled
+          setState(() {
+            appointment.status = FilterStatus.cancelled;
+          });
+        } else {
+          // Handle error if not successful
+          print("Error marking appointment as cancelled.");
+        }
+      } else {
+        // HTTP request failed
+        print(
+            "Failed to mark appointment as cancelled. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error marking appointment as cancelled: $e");
+    }
   }
 
   @override

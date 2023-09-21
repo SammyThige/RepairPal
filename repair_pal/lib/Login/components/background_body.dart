@@ -66,7 +66,7 @@ class _BackgroundState extends State<Background> {
             inactiveBgColor: Colors.black26,
             inactiveFgColor: Colors.white,
             totalSwitches: 2,
-            labels: ['Customer', 'Handyman'],
+            labels: ['HomeOwner', 'Handyman'],
             //icons: [Icons.male, Icons.female],
             onToggle: (index) {
               setState(() {
@@ -143,7 +143,7 @@ class _BackgroundState extends State<Background> {
 
     String url = "";
     if (selectedIndex == 0) {
-      // Customer login
+      // HomeOwner login
       url =
           "https://sam-thige.000webhostapp.com/RepairPal/scripts/test_login.php";
     } else if (selectedIndex == 1) {
@@ -181,7 +181,7 @@ class _BackgroundState extends State<Background> {
 
             // Correct password, navigate to the appropriate page
             if (selectedIndex == 0) {
-              // Customer
+              // HomeOwner
               Navigator.push(
                 currentContext,
                 MaterialPageRoute(
