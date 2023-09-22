@@ -149,7 +149,7 @@ class _BackgroundState extends State<Background> {
     } else if (selectedIndex == 1) {
       // Handyman login
       url =
-          "https://sam-thige.000webhostapp.com/RepairPal/scripts/repairpal_login_handyman.php";
+          "https://sam-thige.000webhostapp.com/RepairPal/scripts/test_login_handyman.php";
     }
 
     Map data = {'emailmap': email, 'passwordmap': password};
@@ -170,17 +170,16 @@ class _BackgroundState extends State<Background> {
           if (isRegistered == 1) {
             // Use shared preferences to store username and firstname
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            prefs.setString('firstName_cl', jsonResponse['firstName_cl'] ?? '');
-            prefs.setString('lastName_cl', jsonResponse['lastName_cl'] ?? '');
-            prefs.setString('phone_cl', jsonResponse['phone_cl'] ?? '');
-            prefs.setString('location', jsonResponse['location'] ?? '');
-            prefs.setString('email', jsonResponse['email'] ?? '');
-
-            // Store the 'picture' field with a null check
-            prefs.setString('picture', jsonResponse['picture'] ?? '');
 
             // Correct password, navigate to the appropriate page
             if (selectedIndex == 0) {
+              prefs.setString(
+                  'firstName_cl', jsonResponse['firstName_cl'] ?? '');
+              prefs.setString('lastName_cl', jsonResponse['lastName_cl'] ?? '');
+              prefs.setString('phone_cl', jsonResponse['phone_cl'] ?? '');
+              prefs.setString('location', jsonResponse['location'] ?? '');
+              prefs.setString('email', jsonResponse['email'] ?? '');
+              prefs.setString('picture', jsonResponse['picture'] ?? '');
               // HomeOwner
               Navigator.push(
                 currentContext,
@@ -188,6 +187,12 @@ class _BackgroundState extends State<Background> {
                     builder: (BuildContext context) => const HomePage()),
               );
             } else if (selectedIndex == 1) {
+              prefs.setString('Fname_wd', jsonResponse['fname'] ?? '');
+              prefs.setString('Lname_wd', jsonResponse['lname'] ?? '');
+              prefs.setString('Phone_wd', jsonResponse['phone'] ?? '');
+              prefs.setString('address', jsonResponse['address'] ?? '');
+              prefs.setString('email', jsonResponse['email'] ?? '');
+              prefs.setString('picture', jsonResponse['picture'] ?? '');
               // Handyman
               Navigator.push(
                 currentContext,

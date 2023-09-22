@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:repair_pal/HomePage/workers/worker_profile/components/image_slider.dart';
+import 'package:repair_pal/repairman_login/portfolio.dart';
 
 class RMProfile extends StatefulWidget {
   const RMProfile({Key? key}) : super(key: key);
@@ -100,7 +100,7 @@ class _RMProfileState extends State<RMProfile> {
                       const SizedBox(
                         height: 30,
                       ),
-                      ComplicatedImageDemo(),
+                      ComplicatedImage(),
                       //RoundedButton(text: "BOOK NOW", press: () {}),
                     ],
                   ),

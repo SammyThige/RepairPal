@@ -172,7 +172,9 @@ class WorkerProfile extends StatelessWidget {
                           const SizedBox(
                             height: 30,
                           ),
-                          ComplicatedImageDemo(),
+                          ComplicatedImageDemo(
+                            worker: worker.email,
+                          ),
                           //RoundedButton(text: "BOOK NOW", press: () {}),
                         ],
                       ),
