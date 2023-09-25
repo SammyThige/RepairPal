@@ -66,7 +66,7 @@ class _BackgroundState extends State<Background> {
             inactiveBgColor: Colors.black26,
             inactiveFgColor: Colors.white,
             totalSwitches: 2,
-            labels: ['HomeOwner', 'Handyman'],
+            labels: ['Home-Owner', 'Handyman'],
             //icons: [Icons.male, Icons.female],
             onToggle: (index) {
               setState(() {
@@ -89,9 +89,6 @@ class _BackgroundState extends State<Background> {
             text: selectedIndex == 0 ? "LOGIN" : "LOGIN",
             press: () {
               loginFunction();
-              /*  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return selectedIndex == 0 ? const HomePage() : RMPage();
-              })); */
             },
           ),
           SizedBox(

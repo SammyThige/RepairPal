@@ -29,17 +29,20 @@ class BookedAppointment extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            Center(
               child: Button(
-                width: 120,
-                title: 'Back to Home Page',
+                width:
+                    double.infinity, // Increase the width to your desired value
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomePage()));
                 },
                 disable: false,
+                title: 'Home', // Keep the title parameter
               ),
+            ),
+            SizedBox(
+              height: 30,
             )
           ],
         ),

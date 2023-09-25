@@ -18,7 +18,10 @@ class _MyProfileState extends State<MyProfile> {
   TextEditingController _emailController = TextEditingController();
 
   String? _profileImagePath;
+  String? _selectedImagePath; // New variable for selected image
   bool _isEditing = false;
+  bool _showSaveImageButton =
+      false; // Control the visibility of the "Save Image" button
 
   @override
   void initState() {
@@ -49,12 +52,16 @@ class _MyProfileState extends State<MyProfile> {
                 },
                 child: CircleAvatar(
                   radius: 70,
-                  backgroundImage: _profileImagePath != null &&
-                          _profileImagePath!.isNotEmpty
-                      ? NetworkImage(
+                  backgroundImage: (_selectedImagePath != null &&
+                          _selectedImagePath!.isNotEmpty)
+                      ? AssetImage(_selectedImagePath!)
+                          as ImageProvider // Cast AssetImage to ImageProvider
+                      : (_profileImagePath != null &&
+                              _profileImagePath!.isNotEmpty)
+                          ? NetworkImage(
                               'https://sam-thige.000webhostapp.com/RepairPal/scripts/$_profileImagePath')
-                          as ImageProvider<Object>
-                      : AssetImage("assets/electrician.png"),
+                          : AssetImage("assets/electrician.png")
+                              as ImageProvider, // Cast AssetImage to ImageProvider
                 ),
               ),
               const SizedBox(height: 20),
@@ -75,6 +82,9 @@ class _MyProfileState extends State<MyProfile> {
                   child: const Text("Edit Profile"),
                 ),
               ),
+              SizedBox(
+                height: 10,
+              ),
               if (_isEditing)
                 SizedBox(
                   height: 50,
@@ -86,7 +96,10 @@ class _MyProfileState extends State<MyProfile> {
                     child: const Text("Save"),
                   ),
                 ),
-              if (_profileImagePath != null)
+              SizedBox(
+                height: 10,
+              ),
+              if (_showSaveImageButton) // Only show "Save Image" button when an image has been selected
                 SizedBox(
                   height: 50,
                   width: 150,
@@ -151,7 +164,9 @@ class _MyProfileState extends State<MyProfile> {
     );
     if (pickedImage != null) {
       setState(() {
-        _profileImagePath = pickedImage.path;
+        _selectedImagePath = pickedImage.path;
+        _showSaveImageButton =
+            true; // Show the "Save Image" button when an image is selected
       });
     }
   }
@@ -187,10 +202,9 @@ class _MyProfileState extends State<MyProfile> {
 
     if (changes.isNotEmpty) {
       try {
-        // Create an HTTP POST request
         final response = await http.post(
           Uri.parse(
-              'https://sam-thige.000webhostapp.com/RepairPal/scripts/update_profile.php'), // Replace with your PHP script URL
+              'https://sam-thige.000webhostapp.com/RepairPal/scripts/updating_profile.php'),
           body: {
             'email': email,
             ...changes, // Include only the changed fields in the request
@@ -200,6 +214,7 @@ class _MyProfileState extends State<MyProfile> {
         if (response.statusCode == 200) {
           // Profile updated successfully
           print('Profile updated successfully.');
+          print('Response: ${response.body}'); // Print the response from PHP
         } else {
           // Handle error
           print('Failed to update profile: ${response.body}');
@@ -215,9 +230,60 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   Future<void> _sendImageToDatabase() async {
-    if (_profileImagePath != null) {
-      // Implement image upload logic here
-      // ...
+    if (_selectedImagePath != null) {
+      final email = _emailController.text;
+
+      try {
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://sam-thige.000webhostapp.com/RepairPal/scripts/posting_profile_image.php'),
+        );
+
+        request.fields['email'] = email;
+
+        // Attach the image file
+        request.files.add(
+          await http.MultipartFile.fromPath('image', _selectedImagePath!),
+        );
+
+        var response = await request.send();
+
+        if (response.statusCode == 200) {
+          // Image uploaded successfully
+          print('Image uploaded successfully.');
+          print(await response.stream.bytesToString());
+          // Show a dialog confirming the image upload
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Image Upload'),
+                content: Text(
+                    'Image has been updated successfully to the database.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        _showSaveImageButton =
+                            false; // Hide the "Save Image" button
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          // Handle error
+          print('Failed to upload image: ${response.reasonPhrase}');
+        }
+      } catch (error) {
+        // Handle any exceptions
+        print('Error uploading image: $error');
+      }
     }
   }
 }

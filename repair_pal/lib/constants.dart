@@ -9,14 +9,14 @@ const kPrimaryColor = Color(0xFF6F35A5);
 const kPrimaryLightColor = Color(0xFFF1E6FF);
 const kCategoryImageSize = 120.0;
 const kHeadTextStyle = TextStyle(
-  color: Colors.black,
+  color: Colors.purple,
   fontSize: 24,
   fontWeight: FontWeight.bold,
 );
 
 const kHeadSubtitleTextStyle = TextStyle(
   fontSize: 18,
-  color: Colors.black87,
+  color: Colors.purple,
 );
 
 class Prefs {

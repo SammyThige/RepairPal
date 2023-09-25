@@ -4,14 +4,14 @@ import 'package:repair_pal/constants.dart';
 import 'package:repair_pal/test_constant.dart';
 //import 'package:repair_pal/test_constant_2.dart';
 
-class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
+/* class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
   //final String userName;
   const AppToolBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+      padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
@@ -29,7 +29,57 @@ class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
               Text(
                 "Hello,\nGood Morning",
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 30,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(120);
+} */
+class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
+  const AppToolBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String greeting;
+    final currentTime = DateTime.now();
+    final hour = currentTime.hour;
+
+    if (hour < 12) {
+      greeting = 'Good Morning';
+    } else if (hour < 17) {
+      greeting = 'Good Afternoon';
+    } else {
+      greeting = 'Good Evening';
+    }
+
+    return Container(
+      padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+        gradient: LinearGradient(
+            colors: [kPrimaryColor, Colors.orangeAccent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Hello,\n$greeting',
+                style: TextStyle(
+                    fontSize: 30,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),

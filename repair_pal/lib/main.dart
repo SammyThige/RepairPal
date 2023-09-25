@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:repair_pal/Login/login_screen.dart';
 
-import 'your_user_provider_file.dart'; // Import your UserProvider file
+import 'your_user_provider_file.dart';
 
 void main() {
   runApp(
@@ -11,9 +11,8 @@ void main() {
         ChangeNotifierProvider(
             create: (_) =>
                 UserProvider()), // Assuming UserProvider is a ChangeNotifier
-        // Add other providers if needed
       ],
-      child: MyApp(), // Your app's main widget
+      child: const MyApp(),
     ),
   );
 }

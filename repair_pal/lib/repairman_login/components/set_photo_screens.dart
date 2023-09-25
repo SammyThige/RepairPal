@@ -198,7 +198,7 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
-                    'Anonymous',
+                    'Portfolio Pictures',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 24,
@@ -212,7 +212,7 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
                     onTap: () {
                       _showSelectPhotoOptions(context);
                     },
-                    backgroundColor: Colors.black,
+                    backgroundColor: Colors.orange,
                     textColor: Colors.white,
                     textLabel: 'Add a Photo',
                   ),

@@ -99,11 +99,11 @@ class _SignUpBodyState extends State<SignUpBody> {
                         items: const [
                           DropdownMenuItem(
                             value: UserRole.HomeOwner,
-                            child: Text('Customer'),
+                            child: Text('HomeOwner'),
                           ),
                           DropdownMenuItem(
                             value: UserRole.RepairPerson,
-                            child: Text('Seller'),
+                            child: Text('HandyMan'),
                           ),
                         ],
                       ),
@@ -119,7 +119,7 @@ class _SignUpBodyState extends State<SignUpBody> {
                                 });
                               },
                               decoration: InputDecoration(
-                                labelText: 'Seller Designation',
+                                labelText: 'HandyMan Designation',
                               ),
                               items: <String>[
                                 'Electrician',

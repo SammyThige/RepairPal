@@ -78,9 +78,9 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       bottomNavigationBar: SizedBox(
-        height: 70,
+        height: 65,
         child: Container(
-          width: size.width * 0.8,
+          width: size.width * 0.7,
           child: GNav(
             backgroundColor: Colors.transparent,
             color: kPrimaryColor,
@@ -88,12 +88,12 @@ class _HomePageState extends State<HomePage> {
             curve: Curves.easeOutExpo,
             duration: Duration(milliseconds: 200),
             tabBackgroundColor: Colors.orange.withOpacity(0.5),
-            gap: 8,
+            gap: 7,
             onTabChange: (index) => setState(() => this.index = index),
             tabs: const [
               GButton(icon: Icons.home, text: "Home"),
-              GButton(icon: Icons.nature, text: "Projects"),
-              GButton(icon: Icons.settings, text: "Settings"),
+              GButton(icon: Icons.timelapse, text: "Appointment"),
+              GButton(icon: Icons.person, text: "Profile"),
               GButton(icon: Icons.message, text: "Chats"),
             ],
           ),

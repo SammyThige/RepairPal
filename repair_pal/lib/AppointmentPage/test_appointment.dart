@@ -450,7 +450,7 @@ class ScheduleCard extends StatelessWidget {
             width: 5,
           ),
           Text(
-            '$day   ${DateFormat('yyyy-MM-dd').format(date)}', // Format date as desired
+            '$day  ${DateFormat('yyyy-MM-dd').format(date)}', // Format date as desired
             style: const TextStyle(
               color: Colors.orange,
             ),

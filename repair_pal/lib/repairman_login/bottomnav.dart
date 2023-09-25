@@ -82,9 +82,9 @@ class _RMPageState extends State<RMPage> {
         },
       ),
       bottomNavigationBar: SizedBox(
-          height: 70,
+          height: 65,
           child: Container(
-            width: size.width * 0.8,
+            width: size.width * 0.7,
             child: GNav(
               backgroundColor: Colors.transparent,
               color: kPrimaryColor,
@@ -96,8 +96,8 @@ class _RMPageState extends State<RMPage> {
               onTabChange: (index) => setState(() => this.index = index),
               tabs: const [
                 GButton(icon: Icons.home, text: "Schedule"),
-                GButton(icon: Icons.nature, text: "Add"),
-                GButton(icon: Icons.settings, text: "Profile"),
+                GButton(icon: Icons.camera, text: "Add"),
+                GButton(icon: Icons.person, text: "Profile"),
                 GButton(icon: Icons.message, text: "Chats")
               ],
             ),
