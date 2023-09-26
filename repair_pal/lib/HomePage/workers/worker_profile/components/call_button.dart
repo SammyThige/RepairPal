@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../test_constant.dart';
 //import 'package:repair_pal/constants.dart';
@@ -50,6 +51,74 @@ class CallButton extends StatelessWidget {
       print('Error making a phone call: $e');
     }
   }
+}
+
+class ChatButton extends StatelessWidget {
+  final Worker worker;
+  final IconData icon;
+  final String text;
+  final VoidCallback ontap;
+  const ChatButton({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.worker,
+    required this.ontap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.fromSize(
+      size: Size(100, 50), // button width and height
+      child: ClipRect(
+        child: Material(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.orange, // button color
+          child: InkWell(
+            splashColor: Colors.green, // splash color
+            onTap: ontap,
+            /* () {
+              _makePhoneCall(worker.phone);
+            }, */ // button pressed
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(icon), // icon
+                Text(text), // text
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+/* void sendMessage(BuildContext context, String phoneNumber, String message) async {
+  final url = 'https://wa.me/$phoneNumber/?text=${Uri.encodeComponent(message)}';
+
+  if (await canLaunchUrl(url as Uri)) {
+    await launchUrl(url as Uri);
+  } else {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('WhatsApp Not Installed'),
+          content: Text('WhatsApp is not installed on your device.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+ */
 }
 
 class BookButton extends StatelessWidget {

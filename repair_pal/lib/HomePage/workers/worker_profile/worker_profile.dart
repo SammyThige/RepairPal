@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 class WorkerProfile extends StatelessWidget {
   final Worker worker;
 
-  const WorkerProfile({super.key, required this.worker});
+  WorkerProfile({super.key, required this.worker});
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +114,56 @@ class WorkerProfile extends StatelessWidget {
                                               color: Colors.grey),
                                         ),
                                       ),
-                                      CallButton(
+                                      ChatButton(
                                         worker: worker,
                                         icon: Icons.message,
                                         //onPressed: () {},
                                         text: 'Chat',
+                                        ontap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              String message =
+                                                  ''; // Initialize an empty message
+
+                                              return AlertDialog(
+                                                title: Text('Enter Message'),
+                                                content: TextField(
+                                                  onChanged: (value) {
+                                                    // Update the message as the user types
+                                                    message = value;
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    hintText:
+                                                        'Type your message here...',
+                                                  ),
+                                                ),
+                                                actions: <Widget>[
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      // Send the message and close the dialog
+                                                      sendMessage(
+                                                          context,
+                                                          worker.phone,
+                                                          message);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text('Send'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      // Close the dialog without sending the message
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text('Cancel'),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
                                       ),
                                     ],
                                   )
@@ -199,5 +244,34 @@ class WorkerProfile extends StatelessWidget {
         )
       ],
     );
+  }
+
+  void sendMessage(
+      BuildContext context, String phoneNumber, String message) async {
+    final uri = Uri.parse(
+        'https://wa.me/$phoneNumber/?text=${Uri.encodeComponent(message)}');
+    //final urlString = uri.toString();
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('WhatsApp Not Installed'),
+            content: Text('WhatsApp is not installed on your device.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
